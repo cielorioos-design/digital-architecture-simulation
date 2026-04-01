@@ -6,228 +6,179 @@
   <title>Digital Architecture Simulation</title>
   <style>
     :root{
-      --bg:#0f172a;
-      --panel:#111827;
-      --card:#1f2937;
-      --muted:#94a3b8;
-      --text:#e5e7eb;
-      --accent:#8b5cf6;
-      --green:#22c55e;
+      --bg1:#08111f;
+      --bg2:#0d1830;
+      --panel:#101b33;
+      --panel2:#13203b;
+      --text:#e8eefc;
+      --muted:#9fb0d4;
+      --line:#5b6f9f;
+      --purple:#8b5cf6;
       --blue:#38bdf8;
+      --green:#22c55e;
       --orange:#f59e0b;
       --pink:#ec4899;
-      --border:#334155;
+      --cyan:#22d3ee;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family:Inter,system-ui,Arial,sans-serif;
-      background:linear-gradient(180deg,#0b1220,#0f172a);
+      background: radial-gradient(circle at top, #102042 0%, var(--bg1) 45%, #060c18 100%);
       color:var(--text);
     }
     .wrap{
       max-width:1500px;
       margin:0 auto;
-      padding:24px;
+      padding:22px 24px 28px;
     }
     h1{
-      margin:0 0 6px;
-      font-size:40px;
+      margin:0;
+      font-size:42px;
       font-weight:800;
+      letter-spacing:-0.02em;
     }
     .sub{
+      margin:8px 0 18px;
       color:var(--muted);
-      margin-bottom:18px;
-      font-size:17px;
+      font-size:18px;
     }
     .controls{
       display:flex;
       gap:10px;
       align-items:center;
-      margin-bottom:18px;
       flex-wrap:wrap;
+      margin-bottom:16px;
     }
     button{
-      background:var(--accent);
-      color:white;
       border:none;
-      border-radius:12px;
-      padding:11px 16px;
-      font-weight:700;
       cursor:pointer;
+      border-radius:14px;
+      padding:11px 16px;
+      font-size:15px;
+      font-weight:800;
+      color:white;
+      background:linear-gradient(90deg,#7c3aed,#8b5cf6);
+      box-shadow:0 10px 24px rgba(124,58,237,.3);
     }
     button.secondary{
-      background:#1e293b;
-      color:#cbd5e1;
-      border:1px solid var(--border);
+      background:#14213f;
+      color:#c7d2fe;
+      border:1px solid #31456f;
+      box-shadow:none;
     }
-    .status{
+    .stage{
       margin-left:auto;
-      background:#172554;
-      color:#bfdbfe;
-      padding:10px 14px;
-      border-radius:12px;
-      font-weight:700;
-      border:1px solid #1d4ed8;
-    }
-
-    .topology{
-      display:grid;
-      grid-template-columns: 1.2fr 0.16fr 1fr 0.16fr 0.8fr 0.16fr 1fr 0.16fr 1fr 0.16fr 0.9fr;
-      gap:10px;
-      align-items:center;
-      margin-bottom:18px;
-    }
-    .node{
-      min-height:150px;
-      background:rgba(17,24,39,.8);
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:16px;
-      position:relative;
-      backdrop-filter: blur(6px);
-      transition:.25s ease;
-      box-shadow:0 10px 30px rgba(0,0,0,.18);
-    }
-    .node.active{
-      transform:translateY(-2px);
-      border-color:var(--accent);
-      box-shadow:0 0 0 2px rgba(139,92,246,.25),0 14px 36px rgba(0,0,0,.24);
-    }
-    .node h3{
-      margin:0 0 10px;
-      font-size:18px;
-    }
-    .mini{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.5;
-    }
-    .arrow{
-      text-align:center;
-      font-size:34px;
-      color:#a78bfa;
+      padding:11px 15px;
+      border-radius:14px;
+      background:#102754;
+      border:1px solid #2f59a8;
+      color:#dbeafe;
       font-weight:800;
+      min-width:360px;
+      text-align:center;
     }
-    .dev{
-      background:linear-gradient(180deg,rgba(30,41,59,.95),rgba(17,24,39,.95));
-    }
-    .edge{background:linear-gradient(180deg,rgba(20,45,34,.95),rgba(12,29,22,.95))}
-    .transport{background:linear-gradient(180deg,rgba(56,31,13,.95),rgba(31,20,10,.95))}
-    .mid{background:linear-gradient(180deg,rgba(36,28,53,.95),rgba(22,18,36,.95))}
-    .cloud{background:linear-gradient(180deg,rgba(16,40,55,.95),rgba(12,24,36,.95))}
-    .std{background:linear-gradient(180deg,rgba(49,28,62,.95),rgba(28,16,36,.95))}
-    .esbn{background:linear-gradient(180deg,rgba(22,44,58,.95),rgba(14,27,35,.95))}
 
-    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-    .chip{
-      background:#0b1220;
-      border:1px solid var(--border);
-      color:#cbd5e1;
-      padding:5px 8px;
+    .sim-shell{
+      background:linear-gradient(180deg, rgba(17,27,51,.72), rgba(10,16,31,.82));
+      border:1px solid #26385e;
+      border-radius:26px;
+      padding:18px 18px 22px;
+      box-shadow:0 16px 40px rgba(0,0,0,.28);
+    }
+
+    .legend{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin:0 0 10px;
+    }
+    .tag{
+      padding:6px 10px;
       border-radius:999px;
       font-size:12px;
-      font-weight:700;
-    }
-
-    .packet-track{
-      position:relative;
-      height:90px;
-      margin:18px 0 24px;
-      background:rgba(255,255,255,.03);
-      border:1px solid var(--border);
-      border-radius:18px;
-      overflow:hidden;
-    }
-    .line{
-      position:absolute;
-      top:44px;
-      left:30px;
-      right:30px;
-      height:3px;
-      background:linear-gradient(90deg,var(--orange),var(--green),var(--blue),var(--accent),var(--pink),#67e8f9);
-      border-radius:999px;
-      opacity:.8;
-    }
-    .packet{
-      position:absolute;
-      top:20px;
-      left:30px;
-      min-width:160px;
-      max-width:220px;
-      background:white;
-      color:#0f172a;
-      padding:10px 14px;
-      border-radius:999px;
       font-weight:800;
-      box-shadow:0 14px 30px rgba(0,0,0,.22);
-      transition:left .9s ease, background .35s ease, color .35s ease;
+      border:1px solid #31456f;
+      background:#0b1530;
+      color:#dbeafe;
     }
 
-    .panels{
+    svg{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    .obj-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:18px;
-      margin-top:8px;
+      grid-template-columns: 1.1fr 1fr;
+      gap:16px;
+      margin-top:14px;
     }
-    .panel{
-      background:rgba(17,24,39,.85);
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:18px;
-      min-height:260px;
-      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    .obj{
+      min-height:210px;
+      background:linear-gradient(180deg,#0c1630,#081223);
+      border:1px solid #26385e;
+      border-radius:22px;
+      padding:16px;
+      box-shadow:0 10px 24px rgba(0,0,0,.22);
     }
-    .panel h4{
+    .obj h3{
       margin:0 0 12px;
-      font-size:18px;
+      font-size:20px;
     }
-    .codecard{
+    .codebox{
       white-space:pre-wrap;
       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      background:#0b1220;
-      border-left:6px solid var(--accent);
-      padding:14px;
-      border-radius:14px;
+      font-size:16px;
       line-height:1.55;
-      margin-bottom:12px;
-      color:#e2e8f0;
+      color:#eef2ff;
+      background:#050c19;
+      border-left:6px solid var(--purple);
+      padding:14px 16px;
+      border-radius:16px;
+      min-height:140px;
     }
-    .metricgrid{
+    .ops{
       display:grid;
       grid-template-columns: repeat(4,1fr);
-      gap:10px;
+      gap:12px;
+      margin-bottom:12px;
     }
     .metric{
-      background:#0b1220;
-      border:1px solid var(--border);
-      border-radius:16px;
+      background:#081223;
+      border:1px solid #26385e;
+      border-radius:18px;
       padding:14px;
       text-align:center;
     }
     .metric .k{
       color:var(--muted);
       font-size:12px;
-      font-weight:700;
-      margin-bottom:4px;
+      font-weight:800;
+      margin-bottom:6px;
+      text-transform:uppercase;
+      letter-spacing:.04em;
     }
     .metric .v{
-      font-size:28px;
+      font-size:34px;
       font-weight:900;
     }
-    .foot{
-      margin-top:14px;
-      color:var(--muted);
-      font-size:13px;
+    .feedback{
+      display:none;
+      margin-top:8px;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(245,158,11,.1);
+      border:1px dashed rgba(245,158,11,.8);
+      color:#fde68a;
+      font-weight:800;
     }
 
-    .flowback{
-      margin-top:16px;
-      padding:12px 14px;
-      border-radius:14px;
-      border:1px dashed #f59e0b;
-      color:#fde68a;
-      background:rgba(245,158,11,.08);
+    .foot{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
       font-weight:700;
     }
   </style>
@@ -235,10 +186,10 @@
 <body>
 <div class="wrap">
   <h1>⚡ Digital Architecture & Data Flow Simulation</h1>
-  <div class="sub">Actual visual pipeline: raw device data → edge packet → middleware object → cloud processing → IEEE 2030.5 payload → ESBN.</div>
+  <div class="sub">Visual end-to-end simulation: devices generate raw telemetry, packets are processed at the edge, normalized in middleware, analyzed in the cloud, converted to IEEE 2030.5, and received by ESBN.</div>
 
   <div class="controls">
-    <button onclick="play()">▶ Play simulation</button>
+    <button onclick="playSimulation()">▶ Play simulation</button>
     <button class="secondary" onclick="setStage(0)">0</button>
     <button class="secondary" onclick="setStage(1)">1</button>
     <button class="secondary" onclick="setStage(2)">2</button>
@@ -246,117 +197,263 @@
     <button class="secondary" onclick="setStage(4)">4</button>
     <button class="secondary" onclick="setStage(5)">5</button>
     <button class="secondary" onclick="setStage(6)">6</button>
-    <div id="status" class="status">Stage 0 — Raw data generated</div>
+    <div id="stageLabel" class="stage">Stage 0 — Raw telemetry generation</div>
   </div>
 
-  <div class="topology">
-    <div id="n0" class="node dev active">
-      <h3>Devices</h3>
-      <div class="mini">Solar PV, EV Charger, Heat Pump</div>
-      <div class="chips">
-        <span class="chip">Modbus</span>
-        <span class="chip">OCPP</span>
-        <span class="chip">Raw telemetry</span>
+  <div class="sim-shell">
+    <div class="legend">
+      <div class="tag">Orange = raw device packet</div>
+      <div class="tag">Green = edge packet</div>
+      <div class="tag">Blue = middleware object</div>
+      <div class="tag">Purple = IEEE 2030.5 payload</div>
+      <div class="tag">Amber dashed = feedback path</div>
+    </div>
+
+    <svg viewBox="0 0 1450 560" aria-label="Digital architecture simulation">
+      <defs>
+        <filter id="glowPurple">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+        <filter id="glowBlue">
+          <feGaussianBlur stdDeviation="5" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <!-- top line -->
+      <path d="M110 210 H1340" stroke="#36507e" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M110 210 H1340" stroke="url(#grad1)" stroke-width="2" fill="none" stroke-linecap="round" opacity=".45"/>
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="25%" stop-color="#22c55e"/>
+          <stop offset="55%" stop-color="#38bdf8"/>
+          <stop offset="80%" stop-color="#8b5cf6"/>
+          <stop offset="100%" stop-color="#22d3ee"/>
+        </linearGradient>
+      </defs>
+
+      <!-- feedback line -->
+      <path d="M1220 420 C1140 420, 1110 460, 1030 460 L260 460"
+            stroke="#f59e0b" stroke-width="3" fill="none" stroke-dasharray="8 8" opacity=".8"/>
+
+      <!-- nodes -->
+      <g id="node-devices">
+        <rect x="40" y="90" width="180" height="180" rx="24" fill="#12203d" stroke="#334a79" stroke-width="2"/>
+        <text x="60" y="122" fill="#eef2ff" font-size="18" font-weight="800">Devices</text>
+
+        <g>
+          <rect x="58" y="138" width="144" height="38" rx="14" fill="#1a2a4b"/>
+          <text x="70" y="162" fill="#fff" font-size="16" font-weight="700">☀️  Solar PV</text>
+          <text x="70" y="201" fill="#c7d2fe" font-size="14">3000 W • 230.4 V • 49.85 Hz</text>
+          <text x="70" y="218" fill="#fcd34d" font-size="13" font-weight="700">Modbus</text>
+        </g>
+
+        <g>
+          <rect x="58" y="226" width="144" height="38" rx="14" fill="#1a2a4b"/>
+          <text x="70" y="250" fill="#fff" font-size="16" font-weight="700">🚗  EV Charger</text>
+          <text x="70" y="289" fill="#c7d2fe" font-size="14">3600 W • charging</text>
+          <text x="70" y="306" fill="#93c5fd" font-size="13" font-weight="700">OCPP</text>
+        </g>
+
+        <g>
+          <rect x="58" y="314" width="144" height="38" rx="14" fill="#1a2a4b"/>
+          <text x="70" y="338" fill="#fff" font-size="16" font-weight="700">🔥  Heat Pump</text>
+          <text x="70" y="377" fill="#c7d2fe" font-size="14">1800 W • 42.3 °C</text>
+          <text x="70" y="394" fill="#fcd34d" font-size="13" font-weight="700">Modbus</text>
+        </g>
+      </g>
+
+      <g id="node-edge">
+        <rect x="300" y="120" width="190" height="150" rx="24" fill="#10291f" stroke="#2f7d57" stroke-width="2"/>
+        <text x="322" y="152" fill="#eef2ff" font-size="18" font-weight="800">Edge Gateway</text>
+        <text x="322" y="181" fill="#c8f3d6" font-size="14">Validation • Timestamp</text>
+        <text x="322" y="201" fill="#c8f3d6" font-size="14">Preprocessing • Merge</text>
+        <rect x="322" y="220" width="82" height="28" rx="14" fill="#0b1629" stroke="#365f48"/>
+        <text x="337" y="239" fill="#d1fae5" font-size="13" font-weight="700">No action</text>
+      </g>
+
+      <g id="node-transport">
+        <rect x="560" y="142" width="140" height="108" rx="22" fill="#311804" stroke="#8a4b10" stroke-width="2"/>
+        <text x="585" y="174" fill="#fff7ed" font-size="18" font-weight="800">Transport</text>
+        <text x="585" y="203" fill="#fed7aa" font-size="15">MQTT + TLS</text>
+        <rect x="582" y="214" width="50" height="24" rx="12" fill="#0b1629" stroke="#8a4b10"/>
+        <text x="595" y="230" fill="#fff" font-size="12" font-weight="700">publish</text>
+      </g>
+
+      <g id="node-mid">
+        <rect x="770" y="100" width="190" height="170" rx="24" fill="#251631" stroke="#5a3c77" stroke-width="2"/>
+        <text x="792" y="132" fill="#eef2ff" font-size="18" font-weight="800">Middleware</text>
+        <text x="792" y="161" fill="#d8b4fe" font-size="14">Normalize • Aggregate</text>
+        <text x="792" y="181" fill="#d8b4fe" font-size="14">JSON</text>
+        <rect x="790" y="204" width="68" height="36" rx="16" fill="#0b1629" stroke="#5a3c77"/>
+        <text x="806" y="227" fill="#fff" font-size="12" font-weight="700">pv_gen</text>
+        <rect x="868" y="204" width="68" height="36" rx="16" fill="#0b1629" stroke="#5a3c77"/>
+        <text x="882" y="227" fill="#fff" font-size="12" font-weight="700">demand</text>
+        <rect x="790" y="248" width="92" height="36" rx="16" fill="#0b1629" stroke="#5a3c77"/>
+        <text x="807" y="271" fill="#fff" font-size="12" font-weight="700">net_balance</text>
+      </g>
+
+      <g id="node-cloud">
+        <rect x="1030" y="120" width="170" height="150" rx="24" fill="#0d2434" stroke="#27617e" stroke-width="2"/>
+        <text x="1052" y="152" fill="#eef2ff" font-size="18" font-weight="800">Cloud</text>
+        <text x="1052" y="181" fill="#bae6fd" font-size="14">Storage • Analytics</text>
+        <text x="1052" y="201" fill="#bae6fd" font-size="14">Forecasting</text>
+        <rect x="1052" y="220" width="74" height="28" rx="14" fill="#0b1629" stroke="#27617e"/>
+        <text x="1065" y="239" fill="#fff" font-size="12" font-weight="700">analytics</text>
+      </g>
+
+      <g id="node-std">
+        <rect x="1270" y="120" width="150" height="150" rx="24" fill="#2d1235" stroke="#7c3aed" stroke-width="2" filter="url(#glowPurple)"/>
+        <text x="1292" y="152" fill="#eef2ff" font-size="18" font-weight="800">2030.5</text>
+        <text x="1292" y="181" fill="#e9d5ff" font-size="14">Standardization</text>
+        <rect x="1292" y="214" width="96" height="28" rx="14" fill="#0b1629" stroke="#7c3aed"/>
+        <text x="1308" y="233" fill="#fff" font-size="12" font-weight="700">utility-ready</text>
+      </g>
+
+      <g id="node-esbn">
+        <rect x="1120" y="330" width="170" height="120" rx="24" fill="#0f2130" stroke="#22d3ee" stroke-width="2" filter="url(#glowBlue)"/>
+        <text x="1145" y="362" fill="#eef2ff" font-size="20" font-weight="800">ESBN</text>
+        <text x="1145" y="392" fill="#cffafe" font-size="14">Receives standardized</text>
+        <text x="1145" y="412" fill="#cffafe" font-size="14">DER data</text>
+      </g>
+
+      <!-- animated packets -->
+      <g id="packetPV">
+        <rect x="120" y="194" width="88" height="28" rx="14" fill="#f59e0b"/>
+        <text x="137" y="213" fill="#111827" font-size="12" font-weight="800">Raw PV</text>
+      </g>
+
+      <g id="packetEV">
+        <rect x="120" y="282" width="88" height="28" rx="14" fill="#38bdf8"/>
+        <text x="137" y="301" fill="#082f49" font-size="12" font-weight="800">Raw EV</text>
+      </g>
+
+      <g id="packetHP">
+        <rect x="120" y="370" width="88" height="28" rx="14" fill="#f59e0b"/>
+        <text x="137" y="389" fill="#111827" font-size="12" font-weight="800">Raw HP</text>
+      </g>
+
+      <g id="packetMain" opacity="0">
+        <rect x="370" y="282" width="128" height="34" rx="17" fill="#22c55e"/>
+        <text x="395" y="304" fill="#052e16" font-size="13" font-weight="800">Edge packet</text>
+      </g>
+
+      <g id="packetMQTT" opacity="0">
+        <rect x="590" y="282" width="140" height="34" rx="17" fill="#38bdf8"/>
+        <text x="615" y="304" fill="#082f49" font-size="13" font-weight="800">MQTT / TLS</text>
+      </g>
+
+      <g id="packetJSON" opacity="0">
+        <rect x="820" y="282" width="138" height="34" rx="17" fill="#8b5cf6"/>
+        <text x="845" y="304" fill="#faf5ff" font-size="13" font-weight="800">JSON object</text>
+      </g>
+
+      <g id="packetCloud" opacity="0">
+        <rect x="1065" y="282" width="142" height="34" rx="17" fill="#ec4899"/>
+        <text x="1087" y="304" fill="#fff1f2" font-size="13" font-weight="800">Cloud ops</text>
+      </g>
+
+      <g id="packet2030" opacity="0">
+        <rect x="1288" y="282" width="136" height="34" rx="17" fill="#7c3aed"/>
+        <text x="1302" y="304" fill="#faf5ff" font-size="13" font-weight="800">2030.5 payload</text>
+      </g>
+
+      <g id="packetFB" opacity="0">
+        <rect x="920" y="442" width="126" height="34" rx="17" fill="#f59e0b"/>
+        <text x="940" y="464" fill="#111827" font-size="13" font-weight="800">No action</text>
+      </g>
+    </svg>
+
+    <div class="obj-grid">
+      <div class="obj">
+        <h3>Current packet / object</h3>
+        <div id="packetView" class="codebox"></div>
       </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n1" class="node edge">
-      <h3>Edge Gateway</h3>
-      <div class="mini">Validation, timestamp, preprocessing, merge</div>
-      <div class="chips">
-        <span class="chip">gateway_id</span>
-        <span class="chip">No action</span>
+      <div class="obj">
+        <h3>Operational view</h3>
+        <div id="metrics" class="ops"></div>
+        <div id="feedback" class="feedback">Control path available: in this scenario, no local control action is returned because the edge is monitoring and forwarding only.</div>
+        <div class="foot">This is a visual transformation simulation, not a real protocol stack implementation.</div>
       </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n2" class="node transport">
-      <h3>Transport</h3>
-      <div class="mini">MQTT + TLS</div>
-      <div class="chips">
-        <span class="chip">publish</span>
-        <span class="chip">secure</span>
-      </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n3" class="node mid">
-      <h3>Middleware</h3>
-      <div class="mini">Normalize, aggregate, JSON</div>
-      <div class="chips">
-        <span class="chip">pv_generation</span>
-        <span class="chip">demand</span>
-        <span class="chip">net_balance</span>
-      </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n4" class="node cloud">
-      <h3>Cloud</h3>
-      <div class="mini">Storage, analytics, forecasting</div>
-      <div class="chips">
-        <span class="chip">time-series</span>
-        <span class="chip">analytics</span>
-      </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n5" class="node std">
-      <h3>Standardization</h3>
-      <div class="mini">IEEE 2030.5 conversion</div>
-      <div class="chips">
-        <span class="chip">utility-ready</span>
-      </div>
-    </div>
-    <div class="arrow">➜</div>
-
-    <div id="n6" class="node esbn">
-      <h3>ESBN</h3>
-      <div class="mini">Receives standardized DER data</div>
-      <div class="chips">
-        <span class="chip">grid integration</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="packet-track">
-    <div class="line"></div>
-    <div id="packet" class="packet">Raw telemetry</div>
-  </div>
-
-  <div class="panels">
-    <div class="panel">
-      <h4>Current packet / object</h4>
-      <div id="packetView" class="codecard"></div>
-    </div>
-
-    <div class="panel">
-      <h4>Operational view</h4>
-      <div id="metrics" class="metricgrid"></div>
-      <div id="feedback" class="flowback" style="display:none"></div>
-      <div class="foot">The object changes shape at each stage. That is the simulation.</div>
     </div>
   </div>
 </div>
 
 <script>
-const statusEl = document.getElementById("status");
-const packetEl = document.getElementById("packet");
-const packetView = document.getElementById("packetView");
-const metrics = document.getElementById("metrics");
-const feedback = document.getElementById("feedback");
+  const stageLabel = document.getElementById("stageLabel");
+  const packetView = document.getElementById("packetView");
+  const metrics = document.getElementById("metrics");
+  const feedback = document.getElementById("feedback");
 
-const positions = ["3%","18%","32%","48%","64%","80%","92%"];
+  const nodes = [
+    document.getElementById("n0"),
+    document.getElementById("n1"),
+    document.getElementById("n2"),
+    document.getElementById("n3"),
+    document.getElementById("n4"),
+    document.getElementById("n5"),
+    document.getElementById("n6")
+  ];
 
-const stages = [
-  {
-    title: "Stage 0 — Raw data generated",
-    packetLabel: "Raw telemetry",
-    color: "#ff8a00",
-    pos: 0,
-    active: [0],
-    object: `PV_01
+  const packetPV = document.getElementById("packetPV");
+  const packetEV = document.getElementById("packetEV");
+  const packetHP = document.getElementById("packetHP");
+  const packetMain = document.getElementById("packetMain");
+  const packetMQTT = document.getElementById("packetMQTT");
+  const packetJSON = document.getElementById("packetJSON");
+  const packetCloud = document.getElementById("packetCloud");
+  const packet2030 = document.getElementById("packet2030");
+  const packetFB = document.getElementById("packetFB");
+
+  const allPackets = [packetPV, packetEV, packetHP, packetMain, packetMQTT, packetJSON, packetCloud, packet2030, packetFB];
+
+  function clearActive() {
+    nodes.forEach(n => n && n.classList.remove("active"));
+  }
+
+  function resetPackets() {
+    allPackets.forEach(p => p.style.opacity = 0);
+    packetPV.setAttribute("transform", "translate(0,0)");
+    packetEV.setAttribute("transform", "translate(0,0)");
+    packetHP.setAttribute("transform", "translate(0,0)");
+    packetMain.setAttribute("transform", "translate(0,0)");
+    packetMQTT.setAttribute("transform", "translate(0,0)");
+    packetJSON.setAttribute("transform", "translate(0,0)");
+    packetCloud.setAttribute("transform", "translate(0,0)");
+    packet2030.setAttribute("transform", "translate(0,0)");
+    packetFB.setAttribute("transform", "translate(0,0)");
+  }
+
+  function renderMetrics(items){
+    metrics.innerHTML = items.map(([k,v]) => `
+      <div class="metric">
+        <div class="k">${k}</div>
+        <div class="v">${v}</div>
+      </div>
+    `).join("");
+  }
+
+  function setStage(i){
+    clearActive();
+    resetPackets();
+    feedback.style.display = "none";
+
+    if(i===0){
+      stageLabel.textContent = "Stage 0 — Raw data generated";
+      document.getElementById("node-devices").classList.add("active");
+      packetPV.style.opacity = 1;
+      packetEV.style.opacity = 1;
+      packetHP.style.opacity = 1;
+      packetView.textContent =
+`PV_01
 protocol=Modbus
 power_w=3000
 voltage_v=230.4
@@ -370,178 +467,145 @@ charging_status=charging
 HP_01
 protocol=Modbus
 power_w=1800
-flow_temp_c=42.3`,
-    metrics: [
-      ["PV generation","3000"],
-      ["EV demand","3600"],
-      ["HP demand","1800"],
-      ["Protocols","2"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 1 — Edge receives and merges packets",
-    packetLabel: "Edge packet",
-    color: "#22c55e",
-    pos: 1,
-    active: [1],
-    object: `EDGE_01
+flow_temp_c=42.3`;
+      renderMetrics([
+        ["PV","3000"],
+        ["EV","3600"],
+        ["HP","1800"],
+        ["Protocols","2"]
+      ]);
+    }
+
+    if(i===1){
+      stageLabel.textContent = "Stage 1 — Raw packets move into the edge gateway";
+      document.getElementById("node-edge").classList.add("active");
+      packetPV.style.opacity = 1;
+      packetEV.style.opacity = 1;
+      packetHP.style.opacity = 1;
+      packetPV.setAttribute("transform","translate(210,88)");
+      packetEV.setAttribute("transform","translate(210,0)");
+      packetHP.setAttribute("transform","translate(210,-88)");
+      packetView.textContent =
+`EDGE_01
 timestamp=2026-03-20T12:00:00
-device_count=3
 validation=OK
 source_protocols=[Modbus,OCPP]
-control_action=None`,
-    metrics: [
-      ["Gateway ID","EDGE_01"],
-      ["Validation","OK"],
-      ["Timestamp","YES"],
-      ["Action","None"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 2 — Packet prepared for MQTT/TLS transport",
-    packetLabel: "MQTT/TLS",
-    color: "#38bdf8",
-    pos: 2,
-    active: [2],
-    object: `transport_wrapper
-protocol=MQTT
-security=TLS
-payload=edge_unified_message
-destination=middleware`,
-    metrics: [
-      ["Protocol","MQTT"],
-      ["Security","TLS"],
-      ["Destination","Middleware"],
-      ["State","In transit"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 3 — Middleware normalizes and aggregates",
-    packetLabel: "JSON object",
-    color: "#8b5cf6",
-    pos: 3,
-    active: [3],
-    object: `{
+device_count=3`;
+      renderMetrics([
+        ["Gateway","EDGE_01"],
+        ["Validation","OK"],
+        ["Timestamp","YES"],
+        ["Packets","3"]
+      ]);
+    }
+
+    if(i===2){
+      stageLabel.textContent = "Stage 2 — Edge merges data into one unified packet";
+      document.getElementById("node-edge").classList.add("active");
+      packetMain.style.opacity = 1;
+      packetView.textContent =
+`EDGE_PACKET
+gateway_id=EDGE_01
+timestamp=2026-03-20T12:00:00
+validation=OK
+control_action=None
+forward_protocol=MQTT`;
+      renderMetrics([
+        ["Merged","YES"],
+        ["Control","None"],
+        ["Output","MQTT"],
+        ["State","Ready"]
+      ]);
+    }
+
+    if(i===3){
+      stageLabel.textContent = "Stage 3 — Packet is transported and normalized by middleware";
+      document.getElementById("node-transport").classList.add("active");
+      document.getElementById("node-mid").classList.add("active");
+      packetMQTT.style.opacity = 1;
+      packetJSON.style.opacity = 1;
+      packetView.textContent =
+`{
   "pv_generation_w": 3000,
   "total_demand_w": 5400,
   "net_balance_w": -2400,
   "operating_state": "Grid import required"
-}`,
-    metrics: [
-      ["PV generation","3000"],
-      ["Total demand","5400"],
-      ["Net balance","-2400"],
-      ["State","Import"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 4 — Cloud processes the normalized data",
-    packetLabel: "Cloud ops",
-    color: "#ec4899",
-    pos: 4,
-    active: [4],
-    object: `cloud_status=received
+}`;
+      renderMetrics([
+        ["MQTT","ON"],
+        ["JSON","YES"],
+        ["Net balance","-2400"],
+        ["State","Import"]
+      ]);
+    }
+
+    if(i===4){
+      stageLabel.textContent = "Stage 4 — Cloud receives processed operational data";
+      document.getElementById("node-cloud").classList.add("active");
+      packetCloud.style.opacity = 1;
+      packetView.textContent =
+`cloud_status=received
 storage=active
 analytics=enabled
-forecasting=enabled`,
-    metrics: [
-      ["Storage","ON"],
-      ["Analytics","ON"],
-      ["Forecasting","ON"],
-      ["Status","Received"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 5 — Converted to IEEE 2030.5 payload",
-    packetLabel: "2030.5 payload",
-    color: "#6366f1",
-    pos: 5,
-    active: [5],
-    object: `IEEE_2030.5_PAYLOAD
+forecasting=enabled`;
+      renderMetrics([
+        ["Storage","ON"],
+        ["Analytics","ON"],
+        ["Forecast","ON"],
+        ["Status","Received"]
+      ]);
+    }
+
+    if(i===5){
+      stageLabel.textContent = "Stage 5 — Data is converted into IEEE 2030.5";
+      document.getElementById("node-std").classList.add("active");
+      packet2030.style.opacity = 1;
+      packetView.textContent =
+`IEEE_2030.5_PAYLOAD
 {
   "community_id": "SEC_01",
   "generation": 3000,
   "demand": 5400,
   "grid_status": "import_required"
-}`,
-    metrics: [
-      ["Format","2030.5"],
-      ["Utility-ready","YES"],
-      ["Interoperability","YES"],
-      ["Destination","ESBN"]
-    ],
-    feedback: ""
-  },
-  {
-    title: "Stage 6 — ESBN receives standardized data",
-    packetLabel: "Received",
-    color: "#06b6d4",
-    pos: 6,
-    active: [6],
-    object: `ESBN_RECEIVED
+}`;
+      renderMetrics([
+        ["Format","2030.5"],
+        ["Utility-ready","YES"],
+        ["Interoperability","YES"],
+        ["Destination","ESBN"]
+      ]);
+    }
+
+    if(i===6){
+      stageLabel.textContent = "Stage 6 — ESBN receives standardized data";
+      document.getElementById("node-esbn").classList.add("active");
+      packet2030.style.opacity = 1;
+      packet2030.setAttribute("transform","translate(-130,80)");
+      packetFB.style.opacity = 1;
+      feedback.style.display = "block";
+      packetView.textContent =
+`ESBN_RECEIVED
 payload=IEEE_2030.5
 generation=3000
 demand=5400
-grid_status=import_required`,
-    metrics: [
-      ["ESBN status","Received"],
-      ["Generation","3000"],
-      ["Demand","5400"],
-      ["Grid status","Import required"]
-    ],
-    feedback: "Control path available: in this scenario, no local control action is sent back because the edge is monitoring and forwarding only."
+grid_status=import_required`;
+      renderMetrics([
+        ["ESBN","Received"],
+        ["Generation","3000"],
+        ["Demand","5400"],
+        ["Grid status","Import required"]
+      ]);
+    }
   }
-];
 
-function renderMetrics(items){
-  metrics.innerHTML = items.map(([k,v]) => `
-    <div class="metric">
-      <div class="k">${k}</div>
-      <div class="v">${v}</div>
-    </div>
-  `).join("");
-}
-
-function setStage(i){
-  const s = stages[i];
-  statusEl.textContent = s.title;
-  packetEl.textContent = s.packetLabel;
-  packetEl.style.left = positions[s.pos];
-  packetEl.style.background = s.color;
-  packetEl.style.color = "white";
-  packetView.textContent = s.object;
-  renderMetrics(s.metrics);
-
-  for(let n=0;n<=6;n++){
-    document.getElementById("n"+n).classList.remove("active");
+  async function playSimulation(){
+    for(let i=0;i<=6;i++){
+      setStage(i);
+      await new Promise(r => setTimeout(r, 1400));
+    }
   }
-  s.active.forEach(n => document.getElementById("n"+n).classList.add("active"));
 
-  if(s.feedback){
-    feedback.style.display = "block";
-    feedback.textContent = s.feedback;
-  } else {
-    feedback.style.display = "none";
-    feedback.textContent = "";
-  }
-}
-
-async function play(){
-  for(let i=0;i<stages.length;i++){
-    setStage(i);
-    await new Promise(r => setTimeout(r, 1400));
-  }
-}
-
-setStage(0);
+  setStage(0);
 </script>
 </body>
 </html>
-"""
-
-components.html(html_code, height=980, scrolling=False)
