@@ -1,98 +1,144 @@
 import streamlit as st
-import pandas as pd
+import time
 
-st.set_page_config(page_title="Digital Architecture Simulation", layout="wide")
+st.set_page_config(layout="wide")
 
-st.title("⚡ Digital Architecture & Data Flow Simulation")
-
-st.markdown("Simulation of data flow from DER devices through Edge, Middleware, and Cloud layers.")
+st.title("⚡ Digital Architecture Simulation")
+st.markdown("Visual simulation of data flow across Edge, Middleware, and Cloud")
 
 # -----------------------------
-# RAW DEVICE DATA
+# STEP CONTROL
 # -----------------------------
-st.subheader("1. Device Layer - Raw Telemetry")
+step = st.slider("Simulation Step", 1, 6, 1)
 
+# -----------------------------
+# STYLE (THIS MAKES IT CUTE)
+# -----------------------------
+st.markdown("""
+<style>
+.box {
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    font-weight: bold;
+    margin: 10px;
+    background-color: #f0f2f6;
+}
+
+.active {
+    background-color: #d1ecff;
+    border: 2px solid #3399ff;
+}
+
+.arrow {
+    text-align: center;
+    font-size: 30px;
+}
+
+.packet {
+    width: 15px;
+    height: 15px;
+    background-color: #00cc66;
+    border-radius: 50%;
+    position: relative;
+    animation: move 2s linear infinite;
+}
+
+@keyframes move {
+    0% { left: 0px; }
+    100% { left: 100px; }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# -----------------------------
+# DEVICE LAYER
+# -----------------------------
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    st.markdown("### ☀️ Solar PV")
-    st.metric("Power", "3000 W")
-    st.write("Protocol: Modbus")
-    st.write("Voltage: 230.4 V")
-    st.write("Frequency: 49.85 Hz")
-    st.write("Status: producing")
+    cls = "box active" if step == 1 else "box"
+    st.markdown(f'<div class="{cls}">☀️ Solar PV<br>3000W<br>Modbus</div>', unsafe_allow_html=True)
 
 with col2:
-    st.markdown("### 🚗 EV Charger")
-    st.metric("Power", "3600 W")
-    st.write("Protocol: OCPP")
-    st.write("Status: charging")
+    cls = "box active" if step == 1 else "box"
+    st.markdown(f'<div class="{cls}">🚗 EV Charger<br>3600W<br>OCPP</div>', unsafe_allow_html=True)
 
 with col3:
-    st.markdown("### 🔥 Heat Pump")
-    st.metric("Power", "1800 W")
-    st.write("Protocol: Modbus")
-    st.write("Flow Temp: 42.3 °C")
-    st.write("Status: heating")
+    cls = "box active" if step == 1 else "box"
+    st.markdown(f'<div class="{cls}">🔥 Heat Pump<br>1800W<br>Modbus</div>', unsafe_allow_html=True)
+
+# -----------------------------
+# ARROW DOWN
+# -----------------------------
+if step >= 2:
+    st.markdown('<div class="arrow">⬇️</div>', unsafe_allow_html=True)
+    st.markdown('<div class="packet"></div>', unsafe_allow_html=True)
 
 # -----------------------------
 # EDGE LAYER
 # -----------------------------
-st.subheader("2. Edge Layer Operation")
-
-st.info("Edge gateway receives data, validates it, timestamps it, and prepares it for MQTT transmission.")
-
-edge_data = pd.DataFrame([
-    ["PV_01", "Modbus", "Unified format", "MQTT-ready", "No action"],
-    ["EV_01", "OCPP", "Unified format", "MQTT-ready", "No action"],
-    ["HP_01", "Modbus", "Unified format", "MQTT-ready", "No action"]
-], columns=["Device", "Protocol", "Processed Format", "Forwarding", "Control Action"])
-
-st.dataframe(edge_data)
+cls = "box active" if step == 2 else "box"
+st.markdown(f'<div class="{cls}">⚙️ EDGE GATEWAY<br>Preprocessing • Validation • Timestamp</div>', unsafe_allow_html=True)
 
 # -----------------------------
-# SYSTEM SUMMARY
+# EDGE → MIDDLEWARE
 # -----------------------------
-st.subheader("3. System Summary")
-
-pv = 3000
-demand = 3600 + 1800
-net = pv - demand
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
-    st.metric("PV Generation", f"{pv} W")
-
-with col2:
-    st.metric("Total Demand", f"{demand} W")
-
-with col3:
-    st.metric("Net Balance", f"{net} W")
-
-if net < 0:
-    st.error("Grid import required")
-else:
-    st.success("Surplus energy available")
+if step >= 3:
+    st.markdown('<div class="arrow">⬇️ MQTT (TLS)</div>', unsafe_allow_html=True)
+    st.markdown('<div class="packet"></div>', unsafe_allow_html=True)
 
 # -----------------------------
-# CLOUD / MIDDLEWARE
+# MIDDLEWARE
 # -----------------------------
-st.subheader("4. Middleware & Cloud")
+cls = "box active" if step == 3 else "box"
+st.markdown(f'<div class="{cls}">🧠 MIDDLEWARE<br>Normalization • Aggregation</div>', unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
+# -----------------------------
+# MIDDLEWARE → CLOUD
+# -----------------------------
+if step >= 4:
+    st.markdown('<div class="arrow">⬇️ HTTPS</div>', unsafe_allow_html=True)
+    st.markdown('<div class="packet"></div>', unsafe_allow_html=True)
 
-with col1:
-    st.markdown("### Middleware")
-    st.write("- Data validation")
-    st.write("- Data normalization")
-    st.write("- Aggregation")
+# -----------------------------
+# CLOUD
+# -----------------------------
+cls = "box active" if step == 4 else "box"
+st.markdown(f'<div class="{cls}">☁️ CLOUD<br>Analytics • Storage • Forecasting</div>', unsafe_allow_html=True)
 
-with col2:
-    st.markdown("### Cloud / ESBN")
-    st.write("- Data storage")
-    st.write("- Analytics & forecasting")
-    st.write("- IEEE 2030.5 happens here later")
+# -----------------------------
+# CONTROL SIGNAL BACK
+# -----------------------------
+if step >= 5:
+    st.markdown('<div class="arrow">⬆️ Control Signal</div>', unsafe_allow_html=True)
+    st.markdown('<div class="packet"></div>', unsafe_allow_html=True)
 
+# -----------------------------
+# FINAL STATE
+# -----------------------------
+if step == 6:
+    st.success("System running: Edge monitoring, cloud optimizing, no local control action")
+
+# -----------------------------
+# EXPLANATION PANEL
+# -----------------------------
 st.markdown("---")
-st.caption("Edge role: Monitoring, preprocessing, and forwarding")
+
+if step == 1:
+    st.info("Devices generate raw telemetry using different protocols (Modbus, OCPP).")
+
+elif step == 2:
+    st.info("Edge receives data, validates it, timestamps it, and prepares it.")
+
+elif step == 3:
+    st.info("Data is converted to MQTT format and securely transmitted (TLS).")
+
+elif step == 4:
+    st.info("Middleware and cloud process the data for storage and analytics.")
+
+elif step == 5:
+    st.info("Cloud can send control signals back to the edge if needed.")
+
+elif step == 6:
+    st.info("In this scenario, edge performs monitoring and forwarding only (no control).")
