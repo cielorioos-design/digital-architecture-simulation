@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Architecture Simulation</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --panel:#111827;
+      --card:#1f2937;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#8b5cf6;
+      --green:#22c55e;
+      --blue:#38bdf8;
+      --orange:#f59e0b;
+      --pink:#ec4899;
+      --border:#334155;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1220,#0f172a);
+      color:var(--text);
+    }
+    .wrap{
+      max-width:1500px;
+      margin:0 auto;
+      padding:24px;
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:40px;
+      font-weight:800;
+    }
+    .sub{
+      color:var(--muted);
+      margin-bottom:18px;
+      font-size:17px;
+    }
+    .controls{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      margin-bottom:18px;
+      flex-wrap:wrap;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      border:none;
+      border-radius:12px;
+      padding:11px 16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    button.secondary{
+      background:#1e293b;
+      color:#cbd5e1;
+      border:1px solid var(--border);
+    }
+    .status{
+      margin-left:auto;
+      background:#172554;
+      color:#bfdbfe;
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:700;
+      border:1px solid #1d4ed8;
+    }
+
+    .topology{
+      display:grid;
+      grid-template-columns: 1.2fr 0.16fr 1fr 0.16fr 0.8fr 0.16fr 1fr 0.16fr 1fr 0.16fr 0.9fr;
+      gap:10px;
+      align-items:center;
+      margin-bottom:18px;
+    }
+    .node{
+      min-height:150px;
+      background:rgba(17,24,39,.8);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:16px;
+      position:relative;
+      backdrop-filter: blur(6px);
+      transition:.25s ease;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .node.active{
+      transform:translateY(-2px);
+      border-color:var(--accent);
+      box-shadow:0 0 0 2px rgba(139,92,246,.25),0 14px 36px rgba(0,0,0,.24);
+    }
+    .node h3{
+      margin:0 0 10px;
+      font-size:18px;
+    }
+    .mini{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+    .arrow{
+      text-align:center;
+      font-size:34px;
+      color:#a78bfa;
+      font-weight:800;
+    }
+    .dev{
+      background:linear-gradient(180deg,rgba(30,41,59,.95),rgba(17,24,39,.95));
+    }
+    .edge{background:linear-gradient(180deg,rgba(20,45,34,.95),rgba(12,29,22,.95))}
+    .transport{background:linear-gradient(180deg,rgba(56,31,13,.95),rgba(31,20,10,.95))}
+    .mid{background:linear-gradient(180deg,rgba(36,28,53,.95),rgba(22,18,36,.95))}
+    .cloud{background:linear-gradient(180deg,rgba(16,40,55,.95),rgba(12,24,36,.95))}
+    .std{background:linear-gradient(180deg,rgba(49,28,62,.95),rgba(28,16,36,.95))}
+    .esbn{background:linear-gradient(180deg,rgba(22,44,58,.95),rgba(14,27,35,.95))}
+
+    .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+    .chip{
+      background:#0b1220;
+      border:1px solid var(--border);
+      color:#cbd5e1;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+    }
+
+    .packet-track{
+      position:relative;
+      height:90px;
+      margin:18px 0 24px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:18px;
+      overflow:hidden;
+    }
+    .line{
+      position:absolute;
+      top:44px;
+      left:30px;
+      right:30px;
+      height:3px;
+      background:linear-gradient(90deg,var(--orange),var(--green),var(--blue),var(--accent),var(--pink),#67e8f9);
+      border-radius:999px;
+      opacity:.8;
+    }
+    .packet{
+      position:absolute;
+      top:20px;
+      left:30px;
+      min-width:160px;
+      max-width:220px;
+      background:white;
+      color:#0f172a;
+      padding:10px 14px;
+      border-radius:999px;
+      font-weight:800;
+      box-shadow:0 14px 30px rgba(0,0,0,.22);
+      transition:left .9s ease, background .35s ease, color .35s ease;
+    }
+
+    .panels{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      margin-top:8px;
+    }
+    .panel{
+      background:rgba(17,24,39,.85);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+      min-height:260px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+    }
+    .panel h4{
+      margin:0 0 12px;
+      font-size:18px;
+    }
+    .codecard{
+      white-space:pre-wrap;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      background:#0b1220;
+      border-left:6px solid var(--accent);
+      padding:14px;
+      border-radius:14px;
+      line-height:1.55;
+      margin-bottom:12px;
+      color:#e2e8f0;
+    }
+    .metricgrid{
+      display:grid;
+      grid-template-columns: repeat(4,1fr);
+      gap:10px;
+    }
+    .metric{
+      background:#0b1220;
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      text-align:center;
+    }
+    .metric .k{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .metric .v{
+      font-size:28px;
+      font-weight:900;
+    }
+    .foot{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .flowback{
+      margin-top:16px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px dashed #f59e0b;
+      color:#fde68a;
+      background:rgba(245,158,11,.08);
+      font-weight:700;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚡ Digital Architecture & Data Flow Simulation</h1>
+  <div class="sub">Actual visual pipeline: raw device data → edge packet → middleware object → cloud processing → IEEE 2030.5 payload → ESBN.</div>
+
+  <div class="controls">
+    <button onclick="play()">▶ Play simulation</button>
+    <button class="secondary" onclick="setStage(0)">0</button>
+    <button class="secondary" onclick="setStage(1)">1</button>
+    <button class="secondary" onclick="setStage(2)">2</button>
+    <button class="secondary" onclick="setStage(3)">3</button>
+    <button class="secondary" onclick="setStage(4)">4</button>
+    <button class="secondary" onclick="setStage(5)">5</button>
+    <button class="secondary" onclick="setStage(6)">6</button>
+    <div id="status" class="status">Stage 0 — Raw data generated</div>
+  </div>
+
+  <div class="topology">
+    <div id="n0" class="node dev active">
+      <h3>Devices</h3>
+      <div class="mini">Solar PV, EV Charger, Heat Pump</div>
+      <div class="chips">
+        <span class="chip">Modbus</span>
+        <span class="chip">OCPP</span>
+        <span class="chip">Raw telemetry</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n1" class="node edge">
+      <h3>Edge Gateway</h3>
+      <div class="mini">Validation, timestamp, preprocessing, merge</div>
+      <div class="chips">
+        <span class="chip">gateway_id</span>
+        <span class="chip">No action</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n2" class="node transport">
+      <h3>Transport</h3>
+      <div class="mini">MQTT + TLS</div>
+      <div class="chips">
+        <span class="chip">publish</span>
+        <span class="chip">secure</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n3" class="node mid">
+      <h3>Middleware</h3>
+      <div class="mini">Normalize, aggregate, JSON</div>
+      <div class="chips">
+        <span class="chip">pv_generation</span>
+        <span class="chip">demand</span>
+        <span class="chip">net_balance</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n4" class="node cloud">
+      <h3>Cloud</h3>
+      <div class="mini">Storage, analytics, forecasting</div>
+      <div class="chips">
+        <span class="chip">time-series</span>
+        <span class="chip">analytics</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n5" class="node std">
+      <h3>Standardization</h3>
+      <div class="mini">IEEE 2030.5 conversion</div>
+      <div class="chips">
+        <span class="chip">utility-ready</span>
+      </div>
+    </div>
+    <div class="arrow">➜</div>
+
+    <div id="n6" class="node esbn">
+      <h3>ESBN</h3>
+      <div class="mini">Receives standardized DER data</div>
+      <div class="chips">
+        <span class="chip">grid integration</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="packet-track">
+    <div class="line"></div>
+    <div id="packet" class="packet">Raw telemetry</div>
+  </div>
+
+  <div class="panels">
+    <div class="panel">
+      <h4>Current packet / object</h4>
+      <div id="packetView" class="codecard"></div>
+    </div>
+
+    <div class="panel">
+      <h4>Operational view</h4>
+      <div id="metrics" class="metricgrid"></div>
+      <div id="feedback" class="flowback" style="display:none"></div>
+      <div class="foot">The object changes shape at each stage. That is the simulation.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const statusEl = document.getElementById("status");
+const packetEl = document.getElementById("packet");
+const packetView = document.getElementById("packetView");
+const metrics = document.getElementById("metrics");
+const feedback = document.getElementById("feedback");
+
+const positions = ["3%","18%","32%","48%","64%","80%","92%"];
+
+const stages = [
+  {
+    title: "Stage 0 — Raw data generated",
+    packetLabel: "Raw telemetry",
+    color: "#ff8a00",
+    pos: 0,
+    active: [0],
+    object: `PV_01
+protocol=Modbus
+power_w=3000
+voltage_v=230.4
+frequency_hz=49.85
+
+EV_01
+protocol=OCPP
+power_w=3600
+charging_status=charging
+
+HP_01
+protocol=Modbus
+power_w=1800
+flow_temp_c=42.3`,
+    metrics: [
+      ["PV generation","3000"],
+      ["EV demand","3600"],
+      ["HP demand","1800"],
+      ["Protocols","2"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 1 — Edge receives and merges packets",
+    packetLabel: "Edge packet",
+    color: "#22c55e",
+    pos: 1,
+    active: [1],
+    object: `EDGE_01
+timestamp=2026-03-20T12:00:00
+device_count=3
+validation=OK
+source_protocols=[Modbus,OCPP]
+control_action=None`,
+    metrics: [
+      ["Gateway ID","EDGE_01"],
+      ["Validation","OK"],
+      ["Timestamp","YES"],
+      ["Action","None"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 2 — Packet prepared for MQTT/TLS transport",
+    packetLabel: "MQTT/TLS",
+    color: "#38bdf8",
+    pos: 2,
+    active: [2],
+    object: `transport_wrapper
+protocol=MQTT
+security=TLS
+payload=edge_unified_message
+destination=middleware`,
+    metrics: [
+      ["Protocol","MQTT"],
+      ["Security","TLS"],
+      ["Destination","Middleware"],
+      ["State","In transit"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 3 — Middleware normalizes and aggregates",
+    packetLabel: "JSON object",
+    color: "#8b5cf6",
+    pos: 3,
+    active: [3],
+    object: `{
+  "pv_generation_w": 3000,
+  "total_demand_w": 5400,
+  "net_balance_w": -2400,
+  "operating_state": "Grid import required"
+}`,
+    metrics: [
+      ["PV generation","3000"],
+      ["Total demand","5400"],
+      ["Net balance","-2400"],
+      ["State","Import"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 4 — Cloud processes the normalized data",
+    packetLabel: "Cloud ops",
+    color: "#ec4899",
+    pos: 4,
+    active: [4],
+    object: `cloud_status=received
+storage=active
+analytics=enabled
+forecasting=enabled`,
+    metrics: [
+      ["Storage","ON"],
+      ["Analytics","ON"],
+      ["Forecasting","ON"],
+      ["Status","Received"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 5 — Converted to IEEE 2030.5 payload",
+    packetLabel: "2030.5 payload",
+    color: "#6366f1",
+    pos: 5,
+    active: [5],
+    object: `IEEE_2030.5_PAYLOAD
+{
+  "community_id": "SEC_01",
+  "generation": 3000,
+  "demand": 5400,
+  "grid_status": "import_required"
+}`,
+    metrics: [
+      ["Format","2030.5"],
+      ["Utility-ready","YES"],
+      ["Interoperability","YES"],
+      ["Destination","ESBN"]
+    ],
+    feedback: ""
+  },
+  {
+    title: "Stage 6 — ESBN receives standardized data",
+    packetLabel: "Received",
+    color: "#06b6d4",
+    pos: 6,
+    active: [6],
+    object: `ESBN_RECEIVED
+payload=IEEE_2030.5
+generation=3000
+demand=5400
+grid_status=import_required`,
+    metrics: [
+      ["ESBN status","Received"],
+      ["Generation","3000"],
+      ["Demand","5400"],
+      ["Grid status","Import required"]
+    ],
+    feedback: "Control path available: in this scenario, no local control action is sent back because the edge is monitoring and forwarding only."
+  }
+];
+
+function renderMetrics(items){
+  metrics.innerHTML = items.map(([k,v]) => `
+    <div class="metric">
+      <div class="k">${k}</div>
+      <div class="v">${v}</div>
+    </div>
+  `).join("");
+}
+
+function setStage(i){
+  const s = stages[i];
+  statusEl.textContent = s.title;
+  packetEl.textContent = s.packetLabel;
+  packetEl.style.left = positions[s.pos];
+  packetEl.style.background = s.color;
+  packetEl.style.color = "white";
+  packetView.textContent = s.object;
+  renderMetrics(s.metrics);
+
+  for(let n=0;n<=6;n++){
+    document.getElementById("n"+n).classList.remove("active");
+  }
+  s.active.forEach(n => document.getElementById("n"+n).classList.add("active"));
+
+  if(s.feedback){
+    feedback.style.display = "block";
+    feedback.textContent = s.feedback;
+  } else {
+    feedback.style.display = "none";
+    feedback.textContent = "";
+  }
+}
+
+async function play(){
+  for(let i=0;i<stages.length;i++){
+    setStage(i);
+    await new Promise(r => setTimeout(r, 1400));
+  }
+}
+
+setStage(0);
+</script>
+</body>
+</html>
+"""
+
+components.html(html_code, height=980, scrolling=False)
